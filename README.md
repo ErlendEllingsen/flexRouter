@@ -5,7 +5,6 @@ A small, lightweight php-router for clean, restful urls. Extremely easy to setup
 ###Installation
 - require flexRouter.class.php
 - create a new instance of flexRouter. 
-- 
 
 ###EXAMPLE
   <?php
