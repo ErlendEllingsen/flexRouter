@@ -16,5 +16,5 @@ A small, lightweight php-router for clean, restful urls. Extremely easy to setup
     echo 'GET was routed to login/:hello/pictures<br>';
     echo 'Picture ID: ' . $flexRouter->param(':hello');
   }  
-  ?>
+?>
 ```
