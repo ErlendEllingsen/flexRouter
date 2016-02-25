@@ -3,10 +3,20 @@ A small, lightweight php-router for clean, restful urls. Extremely easy to setup
 
 
 ###Installation
-- require flexRouter.class.php
-- create a new instance of flexRouter. 
+1. require flexRouter.class.php
+2. create a new instance of flexRouter. 
+3. Add .htaccess-file
 
 ###EXAMPLE
+###HTACCESS
+```htaccess
+RewriteEngine on
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^([^?]*)$ index.php?path=$1 [NC,L,QSA]
+```
+
+####PHP
 
 ```php
 <?php
