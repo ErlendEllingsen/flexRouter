@@ -7,6 +7,8 @@ A small, lightweight php-router for clean, restful urls. Extremely easy to setup
 2. create a new instance of flexRouter. 
 3. Add .htaccess-file
 
+**NB:** Apache-module mod_rewrite must be enabled.
+
 ###EXAMPLE
 ###HTACCESS
 ```htaccess
