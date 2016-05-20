@@ -4,7 +4,7 @@
  * flexRouter - a small, lightweight php-router for clean, restful urls. Extremely easy to setup and configure.
  * Supports setting up routes based on their mode (GET, POST). E.x: GET /user/:id/profile or POST /user/:id:/update-profile
  * @author Erlend Ellingsen <erlend.ame@gmail.com>
- * @version 1.0 21.01.2016
+ * @version 1.1 20.05.2016
  */
 class flexRouter {
 
@@ -30,7 +30,17 @@ class flexRouter {
     $this->dynParams = array();
 
     // Validate mode
-    if (strtolower($mode) != strtolower($this->mode)) return false;
+    if (is_array($mode)) {
+      $modeValid = false;
+      for ($i = 0; $i < count($mode); $i++) {
+        $cM = $mode[$i];
+        if (strtolower($cM) == strtolower($this->mode)) $modeValid = true;
+        if ($modeValid) break;
+      }
+      if (!$modeValid) return false;
+    } else {
+      if (strtolower($mode) != strtolower($this->mode)) return false;
+    }
 
     // Validate pattern
     $routePattern = explode('/', $pattern);
