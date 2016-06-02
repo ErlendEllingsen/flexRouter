@@ -4,6 +4,7 @@ Supports parameters, wildcard urls.
 
 I might add IIS and Nginx-guides/examples later.
 
+[![Build Status](https://travis-ci.org/ErlendEllingsen/flexRouter.svg)](https://travis-ci.org/ErlendEllingsen/flexRouter/)
 
 ###Installation
 1. require flexRouter.class.php
