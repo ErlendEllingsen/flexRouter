@@ -1,5 +1,8 @@
 # flexRouter
 A small, lightweight php-router for clean, restful urls. Extremely easy to setup and configure.
+Supports parameters, wildcard urls.
+
+I might add IIS and Nginx-guides/examples later.
 
 
 ###Installation
