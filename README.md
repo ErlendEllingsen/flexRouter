@@ -28,9 +28,16 @@ RewriteRule ^([^?]*)$ index.php?path=$1 [NC,L,QSA]
       require_once 'inc/flexRouter.class.php';
       $flexRouter = new flexRouter();
       
+      //Example with parameters 
       if ($flexRouter->route('GET', '/login/:hello/pictures')) {
-      echo 'GET was routed to login/:hello/pictures<br>';
-      echo 'Picture ID: ' . $flexRouter->param(':hello');
+            echo 'GET was routed to login/:hello/pictures<br>';
+            echo 'Picture ID: ' . $flexRouter->param(':hello');
       }  
+      
+      //Wildcard-example
+      if ($flexRouter->route('GET', '/i/like/horses*')) {
+            echo 'GET was routed to /i/like/horses*<br>';
+      }  
+      
 ?>
 ```
