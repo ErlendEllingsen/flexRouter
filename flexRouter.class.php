@@ -3,8 +3,9 @@
 /**
  * flexRouter - a small, lightweight php-router for clean, restful urls. Extremely easy to setup and configure.
  * Supports setting up routes based on their mode (GET, POST). E.x: GET /user/:id/profile or POST /user/:id:/update-profile
+ * Now supports wildcards aswell. E.g. /picture/:id/edit* 
  * @author Erlend Ellingsen <erlend.ame@gmail.com>
- * @version 1.1 20.05.2016
+ * @version 1.2 02.06.2016
  */
 class flexRouter {
 
@@ -43,12 +44,16 @@ class flexRouter {
     }
 
     // Validate pattern
+    $wildCard = (substr($pattern, -1) == "*" ? true : false);
+    if ($wildCard) $pattern = substr($pattern, 0, strlen($pattern) - 1);
+
     $routePattern = explode('/', $pattern);
     if (empty($routePattern[0])) unset($routePattern[0]);
     $routePattern = array_values($routePattern);
 
+    $validWildCard = ($wildCard && count($this->params) >= count($routePattern));
+    if (!$validWildCard && (count($routePattern) != count($this->params))) return false;
 
-    if (count($routePattern) != count($this->params)) return false;
 
     for ($i = 0; $i < count($routePattern); $i++) {
         $patternElement = $routePattern[$i];
