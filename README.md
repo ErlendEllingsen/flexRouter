@@ -7,6 +7,10 @@ I might add IIS and Nginx-guides/examples later.
 [![Build Status](https://travis-ci.org/ErlendEllingsen/flexRouter.svg)](https://travis-ci.org/ErlendEllingsen/flexRouter/)
 
 ###Installation
+####Composer
+```composer require erlendellingsen/flex-router```
+
+
 1. require flexRouter.class.php
 2. create a new instance of flexRouter. 
 3. Add .htaccess-file
