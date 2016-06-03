@@ -5,7 +5,7 @@
  * Supports setting up routes based on their mode (GET, POST). E.x: GET /user/:id/profile or POST /user/:id:/update-profile
  * Now supports wildcards aswell. E.g. /picture/:id/edit*
  * @author Erlend Ellingsen <erlend.ame@gmail.com>
- * @version 1.3 02.06.2016
+ * @version 1.4 03.06.2016
  */
 class flexRouter {
 
@@ -14,13 +14,16 @@ class flexRouter {
   public $dynParams;
   public $basePath;
 
+  private $pathCt = 0;
+
   public function __construct() {
 
     // Determine the path
     if (!isset($_GET['path'])) $_GET['path'] = '';
     $this->params = explode('/', $_GET['path']);
+    $this->pathCt = count($this->params);
 
-    for ($i = 0; $i < count($this->params) - 1; $i++) {
+    for ($i = 0; $i < $this->pathCt - 1; $i++) {
       $this->basePath .= '../';
     }
 
@@ -55,12 +58,13 @@ class flexRouter {
     $routePattern = explode('/', $pattern);
     if (empty($routePattern[0])) unset($routePattern[0]);
     $routePattern = array_values($routePattern);
+    $routePatternCt = count($routePattern);
 
-    $validWildCard = ($wildCard && count($this->params) >= count($routePattern));
-    if (!$validWildCard && (count($routePattern) != count($this->params))) return false;
+    $validWildCard = ($wildCard && $this->pathCt >= $routePatternCt);
+    if (!$validWildCard && ($routePatternCt != $this->pathCt)) return false;
 
 
-    for ($i = 0; $i < count($routePattern); $i++) {
+    for ($i = 0; $i < $routePatternCt; $i++) {
         $patternElement = $routePattern[$i];
       if ($patternElement[0] == ':') {
         $this->dynParams[$patternElement] = $this->params[$i];
