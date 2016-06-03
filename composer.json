@@ -1,0 +1,12 @@
+{
+    "name": "erlendellingsen/flex-router",
+    "description": "A small, lightweight php-router for creating clean, RESTful urls. Extremely easy to setup and configure. Supports parameters and wildcard-urls.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Erlend Ellingsen",
+            "email": "erlend.ame@gmail.com"
+        }
+    ],
+    "require": {}
+}
