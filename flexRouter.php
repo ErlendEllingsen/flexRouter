@@ -4,7 +4,7 @@
  * Supports setting up routes based on their mode (GET, POST). E.x: GET /user/:id/profile or POST /user/:id:/update-profile
  * Now supports wildcards aswell. E.g. /picture/:id/edit*
  * @author Erlend Ellingsen <erlend.ame@gmail.com>
- * @version 1.6 18.06.2016
+ * @version 1.7 14.09.2016
  */
 class flexRouter {
     public $mode;
@@ -12,9 +12,7 @@ class flexRouter {
     public $dynParams;
     public $basePath;
     private $pathCt = 0;
-
     public $routed = false;
-
     public function __construct() {
         // Determine the path
         if (!isset($_GET['path'])) $_GET['path'] = '';
@@ -44,6 +42,11 @@ class flexRouter {
         } else if ($mode != '*') {
             if (strtolower($mode) != strtolower($this->mode)) return false;
         }
+        // Check empty pattern
+        if ($pattern == '' && ($this->pathCt == 0 || ($this->pathCt == 1 && $this->params[0] == ''))) {
+            $this->routed = true;
+            return true;
+        } 
         // Validate pattern
         $wildCard = (substr($pattern, -1) == "*" ? true : false);
         if ($wildCard) $pattern = substr($pattern, 0, strlen($pattern) - 1);
