@@ -16,6 +16,7 @@ I might add IIS and Nginx-guides/examples later.
 3. Add .htaccess-file
 
 **NB:** Apache-module mod_rewrite must be enabled.
+
 **NB:** Required Apache-vhost/Directory-setting 
 ```AllowOverride all```
 
