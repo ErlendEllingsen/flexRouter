@@ -4,19 +4,29 @@
  * Supports setting up routes based on their mode (GET, POST). E.x: GET /user/:id/profile or POST /user/:id:/update-profile
  * Supports wildcards aswell. E.g. /picture/:id/edit*
  * @author Erlend Ellingsen <erlend.ame@gmail.com>
- * @version 1.8 14.09.2016
+ * @version 1.9 03.10.2016
  */
 class flexRouter {
-    public $mode;
-    public $params;
-    public $dynParams;
+
     public $basePath = '';
-    private $pathCt = 0;
     public $routed = false;
-    public function __construct() {
+    public $caseSensitive = true;
+
+    private $pathCt = 0;
+    private $mode;
+    private $params;
+    private $dynParams;
+
+    public function __construct($caseSensitive = true) {
+        $this->caseSensitive = $caseSensitive;
         // Determine the path
         if (!isset($_GET['path'])) $_GET['path'] = '';
+
         $this->params = explode('/', $_GET['path']);
+        if (!$this->caseSensitive) {
+            for ($i = 0; $i < count($this->params); $i++) { $this->params[$i] = strtolower($this->params[$i]); }
+        }
+
         $this->pathCt = count($this->params);
         for ($i = 0; $i < $this->pathCt - 1; $i++) {
             $this->basePath .= '../';
@@ -62,7 +72,9 @@ class flexRouter {
                 $this->dynParams[$patternElement] = $this->params[$i];
                 continue;
             }
-            if ($patternElement != $this->params[$i]) return false;
+
+            if ($this->caseSensitive && ($patternElement != $this->params[$i])) return false;
+            if (!$this->caseSensitive && (strtolower($patternElement) != $this->params[$i])) return false;
             // end of routePattern-loop
         }
         $this->routed = true;
