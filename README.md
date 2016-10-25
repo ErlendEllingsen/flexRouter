@@ -17,6 +17,9 @@ I might add IIS and Nginx-guides/examples later.
 
 **NB:** Apache-module mod_rewrite must be enabled.
 
+**NB:** Required Apache-vhost/Directory-setting 
+```AllowOverride all```
+
 ###EXAMPLE
 ###HTACCESS
 ```htaccess
