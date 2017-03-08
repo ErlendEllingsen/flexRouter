@@ -22,4 +22,15 @@ class FlexRouterTest extends TestCase
 
         $this->assertEquals($route, true);
     }
+
+    /**
+     * The initial test to build on
+     */
+    public function testNonWildCardPOST()
+    {
+        $router = new FlexRouter();
+        $route = $router->route('POST', '/');
+
+        $this->assertEquals($route, true);
+    }
 }
