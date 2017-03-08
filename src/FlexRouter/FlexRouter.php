@@ -143,7 +143,7 @@ class FlexRouter {
         for ($i = 0; $i < $routePatternCt; $i++) {
             $patternElement = $routePattern[$i];
 
-            if ($patternElement[0] == ':') {
+            if (isset($patternElement[0]) && $patternElement[0] == ':') {
                 $this->dynParams[$patternElement] = $this->params[$i];
                 continue;
             }
