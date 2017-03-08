@@ -5,6 +5,11 @@ namespace FlexRouter\Tests;
 use FlexRouter\FlexRouter;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * Class FlexRouterTest
+ *
+ * @package FlexRouter\Tests
+ */
 class FlexRouterTest extends TestCase
 {
     /**
