@@ -80,7 +80,7 @@ class FlexRouter {
         $this->mode = (empty($_POST) ? 'GET' : 'POST');
     }
 
-    /**
+    /**php
      * Matches the routing
      *
      * Mode: GET/POST
