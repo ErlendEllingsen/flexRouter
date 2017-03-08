@@ -18,7 +18,8 @@ class FlexRouterTest extends TestCase
     public function testNonWildCardGET()
     {
         $router = new FlexRouter();
-        $route = $router->route('GET', '/');
+        $router->registerRoute('GET', '/', 'homepage');
+        $route = $router->route('homepage');
 
         $this->assertEquals($route, true);
     }
@@ -29,8 +30,9 @@ class FlexRouterTest extends TestCase
     public function testNonWildCardPOST()
     {
         $router = new FlexRouter();
-        $route = $router->route('POST', '/');
+        $router->registerRoute('POST', '/', 'homepage');
+        $route = $router->route('homepage');
 
-        $this->assertEquals($route, true);
+        $this->assertEquals($route, false);
     }
 }

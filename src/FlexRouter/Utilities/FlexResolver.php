@@ -15,4 +15,9 @@ class FlexResolver
     public function __construct()
     {
     }
+
+    public function resolve()
+    {
+
+    }
 }

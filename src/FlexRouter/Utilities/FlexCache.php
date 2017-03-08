@@ -15,4 +15,9 @@ class FlexCache
     public function __construct()
     {
     }
+
+    public function cache()
+    {
+
+    }
 }

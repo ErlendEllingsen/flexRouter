@@ -2,6 +2,9 @@
 
 namespace FlexRouter;
 
+use FlexRouter\FlexRoute;
+use FlexRouter\Utilities\FlexParser;
+
 /**
  * Class FlexRouter
  *
@@ -31,6 +34,16 @@ class FlexRouter {
     public $caseSensitive;
 
     /**
+     * @var bool
+     */
+    private $cache;
+
+    /**
+     * @var array
+     */
+    private $routes;
+
+    /**
      * @var int
      */
     private $pathCt = 0;
@@ -54,10 +67,13 @@ class FlexRouter {
      * FlexRouter constructor.
      *
      * @param bool $caseSensitive
+     * @param bool $cache
      */
-    public function __construct($caseSensitive = true)
+    public function __construct($caseSensitive = true, $cache = false)
     {
         $this->caseSensitive = $caseSensitive;
+        $this->cache         = $cache;
+        $this->routes        = [];
 
         // Determine the path
         if (!isset($_GET['path'])) {
@@ -80,104 +96,53 @@ class FlexRouter {
         $this->mode = (empty($_POST) ? 'GET' : 'POST');
     }
 
-    /**php
+    /**
+     * Registers the routes with the router
+     *
+     * @param $method
+     * @param $route
+     * @param $name
+     */
+    public function registerRoute($method, $route, $name)
+    {
+        array_push($this->routes, new FlexRoute($method, $route, $name));
+    }
+
+    /**
      * Matches the routing
      *
      * Mode: GET/POST
      * Pattern: /users/:id/update
      *
-     * @param $mode
-     * @param $pattern
+     * @param string $name
      * @return bool
      */
-    public function route($mode, $pattern)
+    public function route($name)
     {
-        $this->dynParams = array();
+        $route           = $this->getRoute($name);
+        $mode            = $route->getMethod();
+        $pattern         = $route->getRoute();
+        $parser          = new FlexParser($this->mode, $this->caseSensitive, $this->params, $this->pathCt);
 
-        // Validate mode
-        if (is_array($mode)) {
-            $modeValid = false;
-
-            for ($i = 0; $i < count($mode); $i++) {
-                $cM = $mode[$i];
-                if (strtolower($cM) == strtolower($this->mode)) $modeValid = true;
-                if ($modeValid) break;
-            }
-
-            if (!$modeValid) {
-                return false;
-            }
-        } else if ($mode != '*') {
-            if (strtolower($mode) != strtolower($this->mode)) {
-                return false;
-            }
-        }
-
-        // Check empty pattern
-        if ($pattern == '' && ($this->pathCt == 0 || ($this->pathCt == 1 && $this->params[0] == ''))) {
-            $this->routed = true;
-            return true;
-        }
-
-        // Validate pattern
-        $wildCard = (substr($pattern, -1) == "*" ? true : false);
-
-        if ($wildCard) {
-            $pattern = substr($pattern, 0, strlen($pattern) - 1);
-        }
-
-        $routePattern = explode('/', $pattern);
-
-        if (empty($routePattern[0])) {
-            unset($routePattern[0]);
-        }
-
-        $routePattern   = array_values($routePattern);
-        $routePatternCt = count($routePattern);
-        $validWildCard  = ($wildCard && $this->pathCt >= $routePatternCt);
-
-        if (!$validWildCard && ($routePatternCt != $this->pathCt)) {
-            return false;
-        }
-
-        for ($i = 0; $i < $routePatternCt; $i++) {
-            $patternElement = $routePattern[$i];
-
-            if (isset($patternElement[0]) && $patternElement[0] == ':') {
-                $this->dynParams[$patternElement] = $this->params[$i];
-                continue;
-            }
-
-            if ($this->caseSensitive && ($patternElement != $this->params[$i])) {
-                return false;
-            }
-            if (!$this->caseSensitive && (strtolower($patternElement) != $this->params[$i])) {
-                return false;
-            }
-        }
-        $this->routed = true;
-
-        return true;
+        return $parser->parse($mode, $pattern);
     }
 
     /**
-     * Returns a parameter based upon the tag
+     * Returns the matched route
      *
-     * @param $tag
-     * @return mixed
+     * @param $name
+     * @return FlexRoute
      */
-    public function param($tag)
+    private function getRoute($name)
     {
-        return $this->dynParams[$tag];
-    }
+        $match = array_filter($this->routes, function ($route) use ($name) {
+            if ($route->getName() === $name) {
+                return $route;
+            }
 
-    /**
-     * Retrieves the mode from the router
-     *
-     * @return string
-     */
-    public function getMode()
-    {
-        return $this->mode;
+            return null;
+        });
+
+        return array_values($match)[0];
     }
 }
