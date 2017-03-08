@@ -2,6 +2,7 @@
 
 namespace FlexRouter;
 
+use FlexRouter\Exceptions\RouteNotFoundException;
 use FlexRouter\FlexRoute;
 use FlexRouter\Utilities\FlexParser;
 
@@ -132,6 +133,7 @@ class FlexRouter {
      *
      * @param $name
      * @return FlexRoute
+     * @throws RouteNotFoundException
      */
     private function getRoute($name)
     {
@@ -142,7 +144,12 @@ class FlexRouter {
 
             return null;
         });
+        $match = array_values($match);
 
-        return array_values($match)[0];
+        if (empty($match)) {
+            throw new RouteNotFoundException('The requested route was not found in the collection');
+        }
+
+        return $match[0];
     }
 }
