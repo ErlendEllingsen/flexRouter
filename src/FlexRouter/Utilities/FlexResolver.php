@@ -2,6 +2,8 @@
 
 namespace FlexRouter\Utilities;
 
+use FlexRouter\Exceptions\RouteNotFoundException;
+use FlexRouter\FlexRoute;
 use FlexRouter\FlexRouter;
 
 /**
@@ -30,6 +32,16 @@ class FlexResolver
      * @var FlexParser
      */
     private $parser;
+
+    /**
+     * @var FlexRoute
+     */
+    private $route;
+
+    /**
+     * @var
+     */
+    private $routeParamters;
 
     /**
      * FlexResolver constructor.
@@ -67,9 +79,52 @@ class FlexResolver
         $route = $this->router->route($name);
 
         if ($this->parser->parse($route)) {
+            $routeObject = $this->router->getRoute($name);
+            $routeObject->setParams($this->parser->getParameters());
+
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Selects the route to access
+     *
+     * @param $name
+     * @return $this
+     */
+    public function access($name)
+    {
+        $this->route = $this->router->getRoute($name);
+
+        return $this;
+    }
+
+    /**
+     * Returns the param from the route
+     *
+     * @param $pool
+     * @param $property
+     * @return mixed
+     */
+    public function params($pool, $property)
+    {
+        return $this->route->getParam($pool, $property);
+    }
+
+    /**
+     * This is the not found catch all function
+     *
+     * @param callable|null $handle
+     * @throws RouteNotFoundException
+     */
+    public function notFound(Callable $handle = null)
+    {
+        if ($handle === null) {
+            throw new RouteNotFoundException(null);
+        }
+
+        $handle();
     }
 }

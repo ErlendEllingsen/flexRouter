@@ -25,11 +25,17 @@ class FlexRoute
     private $name;
 
     /**
+     * @var
+     */
+    private $params;
+
+    /**
      * FlexRoute constructor.
      *
      * @param $method
      * @param $route
      * @param $name
+     * @param $params
      */
     public function __construct(
         $method,
@@ -39,6 +45,19 @@ class FlexRoute
         $this->method = $method;
         $this->route  = $route;
         $this->name   = $name;
+    }
+
+    /**
+     * Sets the parameters for the request
+     *
+     * @param $params
+     * @return $this
+     */
+    public function setParams($params)
+    {
+        $this->params = $params;
+
+        return $this;
     }
 
     /**
@@ -69,5 +88,17 @@ class FlexRoute
     public function getName()
     {
         return $this->name;
+    }
+
+    /**
+     * Returns the requested parameter
+     *
+     * @param $pool
+     * @param $property
+     * @return mixed
+     */
+    public function getParam($pool, $property)
+    {
+        return $this->params->$pool->$property;
     }
 }

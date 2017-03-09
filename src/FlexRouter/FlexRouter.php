@@ -88,7 +88,7 @@ class FlexRouter {
      * @return FlexRoute
      * @throws RouteNotFoundException
      */
-    private function getRoute($name)
+    public function getRoute($name)
     {
         $match = null;
 

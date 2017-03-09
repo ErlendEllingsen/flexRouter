@@ -2,6 +2,8 @@
 
 namespace FlexRouter\Utilities;
 
+use stdClass;
+
 /**
  * Class FlexParser
  *
@@ -18,6 +20,11 @@ class FlexParser
      * @var string
      */
     private $requestUri;
+
+    /**
+     * @var
+     */
+    private $routeParams;
 
     /**
      * FlexParser constructor.
@@ -43,13 +50,28 @@ class FlexParser
             return false;
         }
 
-        $simple = $this->matchSimpleRoute($route['route']);
+        $simple      = $this->matchSimpleRoute($route['route']);
+        $placeholder = $this->matchPlaceholderRoute($route['route']);
 
         if ($simple) {
             return true;
         }
 
+        if ($placeholder) {
+            return true;
+        }
+
         return false;
+    }
+
+    /**
+     * Returns the route parameters
+     *
+     * @return mixed
+     */
+    public function getParameters()
+    {
+        return $this->routeParams;
     }
 
     /**
@@ -88,5 +110,117 @@ class FlexParser
         }
 
         return false;
+    }
+
+    /**
+     * Matches A Placeholder Route
+     *
+     * @param $route
+     * @return bool
+     */
+    private function matchPlaceholderRoute($route)
+    {
+        $uriParams    = explode('?', $this->requestUri);
+        $sections     = explode('/', $route);
+        $uriSections  = explode('/', $uriParams[0]);
+
+        if (count($sections) !== count($uriSections)) {
+            return false;
+        }
+
+        if (strpos($route, ':') !== false) {
+            $this->routeParams = $this->retrieveParams($route);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Retrieves all parameters for the request
+     *
+     * Includes all of the route placeholder parameters, all of the GET parameters, and
+     * all of the POST parameters.
+     *
+     * @param $route
+     * @return stdClass
+     */
+    private function retrieveParams($route)
+    {
+        $params             = new stdClass();
+        $uriParams          = explode('?', $this->requestUri);
+        $sections           = explode('/', $route);
+        $uriSections        = explode('/', $uriParams[0]);
+        $params->post = $this->retrievePOSTParams();
+        $params->get  = $this->retrieveGETParams($uriParams);
+        $params->url  = $this->retrieveUrlParams($sections, $uriSections);
+
+        return $params;
+    }
+
+    /**
+     * Retrieves and maps the GET parameters
+     *
+     * @param $uriParams
+     * @return null|stdClass
+     */
+    private function retrieveGETParams($uriParams)
+    {
+        $getParams = new stdClass();
+
+        if (isset($uriParams[1])) {
+            foreach ($_GET as $key => $param) {
+                $getParams->$key = $param;
+            }
+
+            return $getParams;
+        }
+
+        return $getParams = null;
+    }
+
+    /**
+     * Retrieves and maps the POST parameters
+     *
+     * @return null|stdClass
+     */
+    private function retrievePOSTParams()
+    {
+        $postParams = new stdClass();
+
+        if (isset($uriParams[1])) {
+            foreach ($_POST as $key => $param) {
+                $postParams->$key = $param;
+            }
+
+            return $postParams;
+        }
+
+        return $postParams = null;
+    }
+
+    /**
+     * Retrieves and matches up the URL parameters
+     *
+     * @param $sections
+     * @param $uriSections
+     * @return stdClass
+     */
+    private function retrieveUrlParams($sections, $uriSections)
+    {
+        $placeholders = new stdClass();
+
+        array_shift($sections);
+        array_shift($uriSections);
+
+        foreach ($sections as $key => $section) {
+            if (strpos($section, ':') !== false) {
+                $name = str_replace(':', '', $section);
+                $placeholders->$name = $uriSections[$key];
+            }
+        }
+
+        return $placeholders;
     }
 }
