@@ -2,6 +2,7 @@
 
 namespace FlexRouter\Utilities;
 
+use FlexRouter\Contracts\FlexParserInterface;
 use FlexRouter\Exceptions\RouteNotFoundException;
 use FlexRouter\FlexRoute;
 use FlexRouter\FlexRouter;
@@ -49,13 +50,13 @@ class FlexResolver
      * @param $requestMethod
      * @param $requestUri
      * @param FlexRouter $flexRouter
-     * @param FlexParser $flexParser
+     * @param FlexParserInterface $flexParser
      */
     public function __construct(
         $requestMethod,
         $requestUri,
         FlexRouter $flexRouter,
-        FlexParser $flexParser = null
+        FlexParserInterface $flexParser = null
     ) {
         $this->requestMethod = $requestMethod;
         $this->requestUri    = $requestUri;

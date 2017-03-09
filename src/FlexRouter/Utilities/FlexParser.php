@@ -2,6 +2,7 @@
 
 namespace FlexRouter\Utilities;
 
+use FlexRouter\Contracts\FlexParserInterface;
 use stdClass;
 
 /**
@@ -9,7 +10,7 @@ use stdClass;
  *
  * @package FlexRouter\Utilities
  */
-class FlexParser
+class FlexParser implements FlexParserInterface
 {
     /**
      * @var string
