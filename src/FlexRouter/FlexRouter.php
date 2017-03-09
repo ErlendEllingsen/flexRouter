@@ -3,8 +3,6 @@
 namespace FlexRouter;
 
 use FlexRouter\Exceptions\RouteNotFoundException;
-use FlexRouter\FlexRoute;
-use FlexRouter\Utilities\FlexParser;
 
 /**
  * Class FlexRouter
@@ -98,10 +96,6 @@ class FlexRouter {
             if ($route->getName() === $name) {
                 $match = $route;
             }
-        }
-
-        if ($match === null) {
-            throw new RouteNotFoundException(null);
         }
 
         return $match;
