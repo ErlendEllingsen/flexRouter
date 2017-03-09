@@ -16,17 +16,8 @@ use FlexRouter\Exceptions\RouteNotFoundException;
  * @version 1.1.0 03.08.2017
  * @package FlexRouter
  */
-class FlexRouter {
-    /**
-     * @var string
-     */
-    public $basePath = '';
-
-    /**
-     * @var bool
-     */
-    public $routed = false;
-
+class FlexRouter
+{
     /**
      * @var bool
      */

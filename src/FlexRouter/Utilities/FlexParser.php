@@ -50,14 +50,15 @@ class FlexParser
             return false;
         }
 
-        $simple      = $this->matchSimpleRoute($route['route']);
-        $placeholder = $this->matchPlaceholderRoute($route['route']);
-
-        if ($simple) {
+        if ($this->matchSimpleRoute($route['route'])) {
             return true;
         }
 
-        if ($placeholder) {
+        if ($this->matchPlaceholderRoute($route['route'])) {
+            return true;
+        }
+
+        if ($this->matchWildcardRoute($route['route'])) {
             return true;
         }
 
@@ -106,6 +107,8 @@ class FlexParser
     private function matchSimpleRoute($route)
     {
         if ($route === $this->requestUri) {
+            $this->routeParams = $this->retrieveParams($route);
+
             return true;
         }
 
@@ -128,7 +131,40 @@ class FlexParser
             return false;
         }
 
+        foreach ($sections as $key => $section) {
+            if (strpos($section, ':') === false && $section !== $uriSections[$key]) {
+                return false;
+            }
+        }
+
         if (strpos($route, ':') !== false) {
+            $this->routeParams = $this->retrieveParams($route);
+
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Matches A Wildcard Route
+     *
+     * @param $route
+     * @return bool
+     */
+    private function matchWildcardRoute($route)
+    {
+        $uriParams    = explode('?', $this->requestUri);
+        $sections     = explode('/', $route);
+        $uriSections  = explode('/', $uriParams[0]);
+
+        foreach ($sections as $key => $section) {
+            if (str_replace('*', '', $section) !== $uriSections[$key]) {
+                return false;
+            }
+        }
+
+        if (strpos($route, '*') !== false) {
             $this->routeParams = $this->retrieveParams($route);
 
             return true;
@@ -148,10 +184,10 @@ class FlexParser
      */
     private function retrieveParams($route)
     {
-        $params             = new stdClass();
-        $uriParams          = explode('?', $this->requestUri);
-        $sections           = explode('/', $route);
-        $uriSections        = explode('/', $uriParams[0]);
+        $params       = new stdClass();
+        $uriParams    = explode('?', $this->requestUri);
+        $sections     = explode('/', $route);
+        $uriSections  = explode('/', $uriParams[0]);
         $params->post = $this->retrievePOSTParams();
         $params->get  = $this->retrieveGETParams($uriParams);
         $params->url  = $this->retrieveUrlParams($sections, $uriSections);

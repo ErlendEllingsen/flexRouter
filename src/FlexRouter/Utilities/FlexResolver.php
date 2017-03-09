@@ -24,14 +24,14 @@ class FlexResolver
     private $requestUri;
 
     /**
-     * @var FlexRouter
-     */
-    private $router;
-
-    /**
      * @var FlexParser
      */
     private $parser;
+
+    /**
+     * @var FlexRouter
+     */
+    private $router;
 
     /**
      * @var FlexRoute
@@ -39,9 +39,9 @@ class FlexResolver
     private $route;
 
     /**
-     * @var
+     * @var string
      */
-    private $routeParamters;
+    private $routeName;
 
     /**
      * FlexResolver constructor.
@@ -76,7 +76,8 @@ class FlexResolver
      */
     public function resolve($name)
     {
-        $route = $this->router->route($name);
+        $this->routeName = $name;
+        $route           = $this->router->route($name);
 
         if ($this->parser->parse($route)) {
             $routeObject = $this->router->getRoute($name);
@@ -91,12 +92,11 @@ class FlexResolver
     /**
      * Selects the route to access
      *
-     * @param $name
      * @return $this
      */
-    public function access($name)
+    public function access()
     {
-        $this->route = $this->router->getRoute($name);
+        $this->route = $this->router->getRoute($this->routeName);
 
         return $this;
     }

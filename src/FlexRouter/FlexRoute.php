@@ -35,7 +35,6 @@ class FlexRoute
      * @param $method
      * @param $route
      * @param $name
-     * @param $params
      */
     public function __construct(
         $method,
