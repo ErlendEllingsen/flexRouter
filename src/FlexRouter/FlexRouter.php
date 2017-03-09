@@ -78,8 +78,8 @@ class FlexRouter {
         $route        = $routeObject->getRoute();
 
         return [
-            'method' => $method,
-            'route'  => $route,
+            'methods' => $method,
+            'route'   => $route,
         ];
     }
 

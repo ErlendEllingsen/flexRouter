@@ -9,8 +9,14 @@ namespace FlexRouter\Utilities;
  */
 class FlexParser
 {
+    /**
+     * @var string
+     */
     private $requestMethod;
 
+    /**
+     * @var string
+     */
     private $requestUri;
 
     /**
@@ -33,7 +39,11 @@ class FlexParser
      */
     public function parse($route)
     {
-        $simple = $this->matchSimpleRoute($route['method'], $route['route']);
+        if (!$this->validMethod($route['methods'])) {
+            return false;
+        }
+
+        $simple = $this->matchSimpleRoute($route['route']);
 
         if ($simple) {
             return true;
@@ -43,27 +53,37 @@ class FlexParser
     }
 
     /**
+     * Validates the method used is applicable to the selected route
+     *
      * @param $methods
-     * @param $route
      * @return bool
      */
-    private function matchSimpleRoute($methods, $route)
+    private function validMethod($methods)
     {
         if (is_array($methods)) {
             foreach ($methods as $method) {
-                if (
-                    $method === $this->requestMethod &&
-                    $route  === $this->requestUri
-                ) {
+                if ($method === $this->requestMethod) {
                     return true;
                 }
             }
         }
 
-        if (
-            $methods === $this->requestMethod &&
-            $route   === $this->requestUri
-        ) {
+        if ($methods === $this->requestMethod) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Matches a simple route based upon the URI
+     *
+     * @param $route
+     * @return bool
+     */
+    private function matchSimpleRoute($route)
+    {
+        if ($route === $this->requestUri) {
             return true;
         }
 
