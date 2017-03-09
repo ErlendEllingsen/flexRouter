@@ -2,6 +2,11 @@
 
 namespace FlexRouter;
 
+/**
+ * Class FlexRoute
+ *
+ * @package FlexRouter
+ */
 class FlexRoute
 {
     /**
@@ -26,8 +31,11 @@ class FlexRoute
      * @param $route
      * @param $name
      */
-    public function __construct($method, $route, $name)
-    {
+    public function __construct(
+        $method,
+        $route,
+        $name
+    ) {
         $this->method = $method;
         $this->route  = $route;
         $this->name   = $name;

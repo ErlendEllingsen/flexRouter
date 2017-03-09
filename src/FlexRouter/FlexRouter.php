@@ -32,11 +32,6 @@ class FlexRouter {
     /**
      * @var bool
      */
-    public $caseSensitive;
-
-    /**
-     * @var bool
-     */
     private $cache;
 
     /**
@@ -45,56 +40,14 @@ class FlexRouter {
     private $routes;
 
     /**
-     * @var int
-     */
-    private $pathCt = 0;
-
-    /**
-     * @var string
-     */
-    private $mode;
-
-    /**
-     * @var array
-     */
-    private $params;
-
-    /**
-     * @var
-     */
-    private $dynParams;
-
-    /**
      * FlexRouter constructor.
      *
-     * @param bool $caseSensitive
      * @param bool $cache
      */
-    public function __construct($caseSensitive = true, $cache = false)
+    public function __construct($cache = false)
     {
-        $this->caseSensitive = $caseSensitive;
-        $this->cache         = $cache;
-        $this->routes        = [];
-
-        // Determine the path
-        if (!isset($_GET['path'])) {
-            $_GET['path'] = '';
-        }
-
-        $this->params = explode('/', $_GET['path']);
-
-        if (!$this->caseSensitive) {
-            for ($i = 0; $i < count($this->params); $i++) { $this->params[$i] = strtolower($this->params[$i]); }
-        }
-
-        $this->pathCt = count($this->params);
-
-        for ($i = 0; $i < $this->pathCt - 1; $i++) {
-            $this->basePath .= '../';
-        }
-
-        // Determine the mode
-        $this->mode = (empty($_POST) ? 'GET' : 'POST');
+        $this->cache  = $cache;
+        $this->routes = [];
     }
 
     /**
@@ -116,16 +69,18 @@ class FlexRouter {
      * Pattern: /users/:id/update
      *
      * @param string $name
-     * @return bool
+     * @return array
      */
     public function route($name)
     {
-        $route           = $this->getRoute($name);
-        $mode            = $route->getMethod();
-        $pattern         = $route->getRoute();
-        $parser          = new FlexParser($this->mode, $this->caseSensitive, $this->params, $this->pathCt);
+        $routeObject  = $this->getRoute($name);
+        $method       = $routeObject->getMethod();
+        $route        = $routeObject->getRoute();
 
-        return $parser->parse($mode, $pattern);
+        return [
+            'method' => $method,
+            'route'  => $route,
+        ];
     }
 
     /**
@@ -137,19 +92,18 @@ class FlexRouter {
      */
     private function getRoute($name)
     {
-        $match = array_filter($this->routes, function ($route) use ($name) {
+        $match = null;
+
+        foreach ($this->routes as $route) {
             if ($route->getName() === $name) {
-                return $route;
+                $match = $route;
             }
-
-            return null;
-        });
-        $match = array_values($match);
-
-        if (empty($match)) {
-            throw new RouteNotFoundException('The requested route was not found in the collection');
         }
 
-        return $match[0];
+        if ($match === null) {
+            throw new RouteNotFoundException(null);
+        }
+
+        return $match;
     }
 }
