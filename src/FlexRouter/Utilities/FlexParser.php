@@ -106,7 +106,9 @@ class FlexParser
      */
     private function matchSimpleRoute($route)
     {
-        if ($route === $this->requestUri) {
+        $uriParams = explode('?', $this->requestUri);
+
+        if ($route === $uriParams[0]) {
             $this->routeParams = $this->retrieveParams($route);
 
             return true;

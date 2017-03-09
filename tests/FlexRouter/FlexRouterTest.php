@@ -14,7 +14,7 @@ use PHPUnit\Framework\TestCase;
 class FlexRouterTest extends TestCase
 {
     /**
-     * The initial test to build on
+     * Tests a simple match
      */
     public function testNonWildCardGET()
     {
@@ -24,6 +24,21 @@ class FlexRouterTest extends TestCase
         $resolver = new FlexResolver('GET', '/', $router);
 
         $this->assertEquals($resolver->resolve('homepage'), true);
+    }
+    /**
+     * Tests a simple match with GET parameters
+     */
+    public function testNonWildCardGETWithGETParams()
+    {
+        $_GET['test'] = 'test-value';
+
+        $router = new FlexRouter();
+        $router->registerRoute('GET', '/', 'homepage');
+
+        $resolver = new FlexResolver('GET', '/?test=test-value', $router);
+
+        $this->assertEquals($resolver->resolve('homepage'), true);
+        $this->assertEquals($resolver->access()->params('get', 'test'), 'test-value');
     }
 
     /**
@@ -80,5 +95,36 @@ class FlexRouterTest extends TestCase
         $resolver = new FlexResolver('POST', '/', $router);
 
         $this->assertEquals($resolver->resolve('homepage'), false);
+    }
+
+    /**
+     * Tests a basic parameter route
+     */
+    public function testParameterRoutes()
+    {
+        $router = new FlexRouter();
+        $router->registerRoute('GET', '/test/:id/post', 'param');
+
+        $resolver = new FlexResolver('GET', '/test/slug/post', $router);
+
+        $this->assertEquals($resolver->resolve('param'), true);
+        $this->assertEquals($resolver->access()->params('url', 'id'), 'slug');
+    }
+
+    /**
+     * Tests a basic parameter route
+     */
+    public function testParameterRoutesWithGET()
+    {
+        $_GET['test'] = 'test-value';
+
+        $router = new FlexRouter();
+        $router->registerRoute('GET', '/test/:id/post', 'param');
+
+        $resolver = new FlexResolver('GET', '/test/slug/post?test=test-value', $router);
+
+        $this->assertEquals($resolver->resolve('param'), true);
+        $this->assertEquals($resolver->access()->params('url', 'id'), 'slug');
+        $this->assertEquals($resolver->access()->params('get', 'test'), 'test-value');
     }
 }
