@@ -4,10 +4,10 @@ namespace FlexRouter\Exceptions;
 
 use Exception;
 
-class RouteNotFoundException extends Exception
+class ParameterNotFoundException extends Exception
 {
     /**
-     * RouteNotFoundException constructor.
+     * ParameterNotFoundException constructor.
      *
      * @param string $message
      * @param int $code

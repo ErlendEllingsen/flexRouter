@@ -2,6 +2,8 @@
 
 namespace FlexRouter;
 
+use FlexRouter\Exceptions\ParameterNotFoundException;
+
 /**
  * Class FlexRoute
  *
@@ -98,6 +100,12 @@ class FlexRoute
      */
     public function getParam($pool, $property)
     {
-        return $this->params->$pool->$property;
+        $param = isset($this->params->$pool->$property) ? $this->params->$pool->$property : false;
+
+        if (!$param) {
+            throw new ParameterNotFoundException("the parameter $property was not found in the $pool pool");
+        }
+
+        return $param;
     }
 }
