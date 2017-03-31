@@ -25,6 +25,7 @@ class FlexRouterTest extends TestCase
 
         $this->assertEquals($resolver->resolve('homepage'), true);
     }
+
     /**
      * Tests a simple match with GET parameters
      */
@@ -126,5 +127,20 @@ class FlexRouterTest extends TestCase
         $this->assertEquals($resolver->resolve('param'), true);
         $this->assertEquals($resolver->access()->params('url', 'id'), 'slug');
         $this->assertEquals($resolver->access()->params('get', 'test'), 'test-value');
+    }
+
+    /**
+     * Tests a basic parameter route
+     */
+    public function testNotFound()
+    {
+        $router = new FlexRouter();
+        $router->registerRoute('GET', '/', 'homepage');
+
+        $resolver = new FlexResolver('GET', '/asdf', $router);
+
+        $resolver->notFound(function () {
+            $this->assertEquals(true, true);
+        });
     }
 }
